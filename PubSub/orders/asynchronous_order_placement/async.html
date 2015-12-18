@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var response_time_map = {};
+            response_time_map["awesome"] = Date.parse("01/01/2016 00:00:02");
+            response_time_map["okay"] = Date.parse("01/01/2016 00:00:04");
+            response_time_map["bad"] = Date.parse("01/01/2016 00:00:08");
+            $('.reserve-now').on('click', function (e) {
+                $('#start').click();
+                $.post("/reserve/bike/", {number: "John", email: "2pm"}, function () {
+                    $('#stop').click();
+                })
+                        .done(function () {
+                            var response_time = Date.parse("01/01/2016 " + $('#timeheader').text());
+                            if (response_time <= response_time_map["awesome"]){
+                                $(".customer-face").attr('src', 'http://img1.123freevectors.com/wp-content/uploads/new/icon/075-smiley-face-vector-art-free-download-l.png');
+                            } else if (response_time <=response_time_map["okay"]){
+                                $(".customer-face").attr('src', 'http://www.clipartbest.com/cliparts/9cz/xxR/9czxxRyyi.png');
+                            } else if (response_time >= response_time_map["okay"]){
+                                $(".customer-face").attr('src', 'http://tse3.mm.bing.net/th?id=OIP.M7b74b83163234751aba8637cef0c0c6dH0');
+                            }
+                        })
+                        .fail(function () {
+                            alert("error");
+                        })
+                        .always(function () {
+                        });
+            });
+        });
+    </script>
+</head>
+<body style="padding:30px">
+<div id="result-face" class="">
+    <div class="page-header">
+        <h1>Order Placement</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-4">
+        <!--<div class="panel panel-default">-->
+        <!--<div class="panel-heading">-->
+        <!--<h3 class="panel-title">Panel title</h3>-->
+        <!--</div>-->
+        <!--<div class="panel-body">-->
+        <!--Panel content-->
+        <!--</div>-->
+        <!--</div>-->
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Product</h3>
+            </div>
+            <div class="panel-body">
+                <button style="float:right" type="button" class="btn btn-lg btn-info reserve-now">Reserve Now</button>
+                <img style="height: 200px; width:200px"
+                     src="http://assets.credr.com/bike_images/h-260_w-357/69440_7f100b7b36092fb9b06dfb4fac360931.jpg"
+                     class="img-thumbnail product"
+                     alt="A generic square placeholder image with a white border around it, making it resemble a photograph taken with an old instant camera">
+            </div>
+
+        </div>
+    </div>
+    <!-- /.col-sm-4 -->
+    <div class="col-sm-4">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">Response Time</h3>
+            </div>
+            <div class="panel-body">
+                <h1 id="timeheader">
+                    <time>00:00:00</time>
+                </h1>
+                <button id="start">start</button>
+                <button id="stop">stop</button>
+                <button id="clear">clear</button>
+            </div>
+        </div>
+    </div>
+    <!-- /.col-sm-4 -->
+    <div class="col-sm-4">
+        <div class="panel panel-warning">
+            <div class="panel-heading">
+                <h3 class="panel-title">Customer</h3>
+            </div>
+            <div class="panel-body">
+                <img style="height: 200px; width:200px"
+                     src="http://www.clker.com/cliparts/2/y/n/p/b/1/tango-face-plain-md.png"
+                     class="img-thumbnail customer-face"
+                     alt="A generic square placeholder image with a white border around it, making it resemble a photograph taken with an old instant camera">
+            </div>
+        </div>
+    </div>
+    <!-- /.col-sm-4 -->
+</div>
+
+</body>
+<script type="text/javascript">
+    //<![CDATA[
+    window.onload = function () {
+        var h1 = document.getElementById('timeheader'),
+                start = document.getElementById('start'),
+                stop = document.getElementById('stop'),
+                clear = document.getElementById('clear'),
+                seconds = 0, minutes = 0, hours = 0,
+                t;
+
+        function add() {
+            seconds++;
+            if (seconds >= 60) {
+                seconds = 0;
+                minutes++;
+                if (minutes >= 60) {
+                    minutes = 0;
+                    hours++;
+                }
+            }
+
+            h1.textContent = (hours ? (hours > 9 ? hours : "0" + hours) : "00") + ":" + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds);
+
+            timer();
+        }
+
+        function timer() {
+            t = setTimeout(add, 1000);
+        }
+
+        /* Start button */
+        start.onclick = timer;
+
+        /* Stop button */
+        stop.onclick = function () {
+            clearTimeout(t);
+        };
+
+        /* Clear button */
+        clear.onclick = function () {
+            h1.textContent = "00:00:00";
+            seconds = 0;
+            minutes = 0;
+            hours = 0;
+        }
+    };//]]>
+</script>
+</html>
