@@ -1,4 +1,4 @@
-You'll need following stuff to run code for Pub/Sub pattern
+# You'll need following stuff to run code for Pub/Sub pattern
 
 1. RabbitMQ:
    - Install it with brew
@@ -18,3 +18,7 @@ You'll need following stuff to run code for Pub/Sub pattern
    ```
      pip install -r requirements.txt
    ```
+
+# Run rabbitmq server before running scripts
+```
+ > [sudo] rabbitmq-server
