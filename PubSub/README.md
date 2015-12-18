@@ -9,7 +9,7 @@ You'll need following stuff to run code for Pub/Sub pattern
 	[sudo] brew install rabbitmq
      else:
        # install homebrew
-       ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+        [sudo] ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
        # once done, install rabbitmq
 	[sudo] brew install rabbitmq
     ```
