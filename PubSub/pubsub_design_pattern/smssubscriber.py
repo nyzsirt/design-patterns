@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import pika
+import json
 import time
+
 
 
 def subscribe():
@@ -23,7 +25,7 @@ def subscribe():
 
         # mimicking sms execution time with sleep method
         time.sleep(1.5)
-        print "SMS sent to %r" % body
+        print "SMS sent to %r" % str(json.loads(body)['number'])
         return 1
 
     channel.basic_consume(on_message_send_sms,

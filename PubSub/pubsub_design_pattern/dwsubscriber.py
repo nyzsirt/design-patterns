@@ -22,7 +22,7 @@ def subscribe():
     def on_message_push_logs_to_dw(ch, method, properties, body):
         # mimicking dw api call execution time with sleep method
         time.sleep(1)
-        print "Logs pushed to DW"
+        print "Logs %r pushed to DW" % body
         return 1
 
     channel.basic_consume(on_message_push_logs_to_dw,

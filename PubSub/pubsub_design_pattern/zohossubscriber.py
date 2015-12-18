@@ -23,7 +23,7 @@ def subscribe():
 
         # mimicking zoho api call execution time with sleep method
         time.sleep(1)
-        print "Zoho updated"
+        print "Zoho updated with %r data" % body
         return 1
 
     channel.basic_consume(on_message_call_zoho,

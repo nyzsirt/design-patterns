@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import pika
+import json
 import time
 
 
@@ -22,7 +23,7 @@ def subscribe():
     def on_message_send_email(ch, method, properties, body):
         # mimicking email execution time with sleep method
         time.sleep(1)
-        print "Email sent to %r" % body
+        print "Email sent to %r" % str(json.loads(body)['email'])
         return 1
 
     channel.basic_consume(on_message_send_email,
