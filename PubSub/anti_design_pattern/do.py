@@ -16,7 +16,7 @@ def send_email(email):
 
 def update_zoho():
     # mimicking zoho api call execution time with sleep method
-    time.sleep(1)
+    time.sleep(2)
     print "Zoho updated"
     return 1
 
