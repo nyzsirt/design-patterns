@@ -2,9 +2,8 @@
 from BaseHTTPServer import HTTPServer
 from BaseHTTPServer import BaseHTTPRequestHandler
 import cgi
-import json
 
-from PubSub.pubsub_design_pattern import publisher
+from PubSub.anti_design_pattern import do
 
 PORT = 8003
 FILE_PREFIX = "."
@@ -42,7 +41,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
         self.wfile.write("\n")
 
         try:
-            output = open('sync.html').read()
+            output = open('async.html').read()
         except Exception:
             output = "{'error': 'Could not find index file'}"
         self.wfile.write(output)
@@ -73,17 +72,18 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 environ={'REQUEST_METHOD': 'POST',
                          'CONTENT_TYPE': self.headers['Content-Type'],
                          })
-            message = {}
-            message['number'] = form.list[0].value
-            message['email'] = form.list[1].value
+            number = form.list[0].value
+            email = form.list[1].value
 
-            publisher.publish(json.dumps(message))
+            do.send_sms(number)
+            do.send_email(email)
+            do.update_zoho()
+            do.push_logs_to_dw()
             self.wfile.write('{\n')
 
             self.wfile.write('\n}')
 
         except Exception as e:
-            print e.__str__()
             self.send_response(500)
 
 

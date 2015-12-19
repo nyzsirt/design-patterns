@@ -2,8 +2,9 @@
 from BaseHTTPServer import HTTPServer
 from BaseHTTPServer import BaseHTTPRequestHandler
 import cgi
+import json
 
-from PubSub.anti_design_pattern import do
+from PubSub.pubsub_design_pattern import publisher
 
 PORT = 8003
 FILE_PREFIX = "."
@@ -14,9 +15,9 @@ if __name__ == "__main__":
 
         parser = argparse.ArgumentParser(description='A simple server for testing.')
         parser.add_argument('-p', '--port', type=int, dest="PORT",
-                           help='the port to run the server on; defaults to 8003')
+                            help='the port to run the server on; defaults to 8003')
         parser.add_argument('--path', type=str, dest="PATH",
-                           help='the folder to find the json files')
+                            help='the folder to find the json files')
 
         args = parser.parse_args()
 
@@ -30,19 +31,18 @@ if __name__ == "__main__":
         pass
 
 
-class HTTPRequestHandler (BaseHTTPRequestHandler):
-
+class HTTPRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
 
-        #send response code:
+        # send response code:
         self.send_response(200)
-        #send headers:
+        # send headers:
         self.send_header("Content-type", "text/html")
         # send a blank line to end headers:
         self.wfile.write("\n")
 
         try:
-            output = open('async.html').read()
+            output = open('sync.html').read()
         except Exception:
             output = "{'error': 'Could not find index file'}"
         self.wfile.write(output)
@@ -57,7 +57,7 @@ class HTTPRequestHandler (BaseHTTPRequestHandler):
                 response_code = int(self.path[1:])
             except Exception:
                 response_code = 201
-            
+
         try:
             self.send_response(response_code)
             self.wfile.write('Content-Type: application/json\n')
@@ -67,24 +67,23 @@ class HTTPRequestHandler (BaseHTTPRequestHandler):
 
             self.end_headers()
 
-
             form = cgi.FieldStorage(
-                    fp=self.rfile,
-                    headers=self.headers,
-                    environ={'REQUEST_METHOD':'POST',
-                                     'CONTENT_TYPE':self.headers['Content-Type'],
-                                     })
-            number = ''
-            email = ''
-            do.send_sms(number)
-            do.send_email(email)
-            do.update_zoho()
-            do.push_logs_to_dw()
+                fp=self.rfile,
+                headers=self.headers,
+                environ={'REQUEST_METHOD': 'POST',
+                         'CONTENT_TYPE': self.headers['Content-Type'],
+                         })
+            message = {}
+            message['number'] = form.list[0].value
+            message['email'] = form.list[1].value
+
+            publisher.publish(json.dumps(message))
             self.wfile.write('{\n')
 
             self.wfile.write('\n}')
 
         except Exception as e:
+            print e.__str__()
             self.send_response(500)
 
 
